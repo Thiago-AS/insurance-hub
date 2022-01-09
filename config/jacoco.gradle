@@ -1,0 +1,33 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+def excludeFiles = ['**/ApiApplication.class',
+                    '**/CoreApplication.class',
+                    '**/ExceptionHandlerConfiguration.class',]
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80
+            }
+        }
+    }
+
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: excludeFiles)
+        })
+    }
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: excludeFiles)
+        })
+    }
+}

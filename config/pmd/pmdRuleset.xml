@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="PMD Ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    <description>PMD Ruleset</description>
+
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="JUnitTestContainsTooManyAsserts"/>
+        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+        <exclude name="UnusedAssignment"/>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="AbstractNaming"/>
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="AvoidDollarSigns"/>
+        <exclude name="AvoidFinalLocalVariable"/>
+        <exclude name="AvoidPrefixingMethodParameters"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="ForLoopsMustUseBraces"/>
+        <exclude name="IfElseStmtsMustUseBraces"/>
+        <exclude name="IfStmtsMustUseBraces"/>
+        <exclude name="LocalHomeNamingConvention"/>
+        <exclude name="LocalInterfaceSessionNamingConvention"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="LongVariable"/>
+        <exclude name="MDBAndSessionBeanNamingConvention"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="MIsLeadingVariableName"/>
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="RemoteInterfaceNamingConvention"/>
+        <exclude name="RemoteSessionInterfaceNamingConvention"/>
+        <exclude name="ShortClassName"/>
+        <exclude name="ShortMethodName"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="SuspiciousConstantFieldName"/>
+        <exclude name="TooManyStaticImports"/>
+        <exclude name="VariableNamingConventions"/>
+        <exclude name="WhileLoopsMustUseBraces"/>
+    </rule>
+
+    <rule ref="category/java/design.xml">
+        <exclude name="AvoidCatchingGenericException"/>
+        <exclude name="AvoidThrowingRawExceptionTypes"/>
+        <exclude name="DataClass"/>
+        <exclude name="LawOfDemeter"/>
+        <exclude name="LoosePackageCoupling"/>
+        <exclude name="ModifiedCyclomaticComplexity"/>
+        <exclude name="NcssConstructorCount"/>
+        <exclude name="NcssCount"/>
+        <exclude name="NcssMethodCount"/>
+        <exclude name="NcssTypeCount"/>
+        <exclude name="SignatureDeclareThrowsException"/>
+        <exclude name="StdCyclomaticComplexity"/>
+        <exclude name="UseUtilityClass"/>
+    </rule>
+
+    <rule ref="category/java/documentation.xml">
+        <exclude name="CommentRequired"/>
+        <exclude name="CommentSize"/>
+    </rule>
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="AvoidBranchingStatementAsLastInLoop"/>
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="CallSuperLast"/>
+        <exclude name="MissingSerialVersionUID"/>
+        <exclude name="StaticEJBFieldShouldBeFinal"/>
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+    </rule>
+
+    <rule ref="category/java/bestpractices.xml/UnusedAssignment">
+        <properties>
+            <property name="checkUnusedPrefixIncrement" value="false" />
+            <property name="reportUnusedVariables" value="false" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="UnsynchronizedStaticDateFormatter"/>
+    </rule>
+
+    <rule ref="category/java/performance.xml"/>
+
+    <rule ref="category/java/security.xml"/>
+</ruleset>

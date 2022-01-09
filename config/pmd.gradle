@@ -1,0 +1,24 @@
+apply plugin: 'pmd'
+
+pmd {
+    toolVersion = '6.27.0'
+    ruleSetFiles = files("$rootProject.projectDir/config/pmd/pmdRuleset.xml")
+    ruleSets = []
+    consoleOutput = true
+}
+
+pmdMain {
+    source = 'src/main/java'
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+pmdTest {
+    source = 'src/test/java'
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}

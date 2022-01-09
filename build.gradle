@@ -1,30 +1,60 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "com.github.ben-manes:gradle-versions-plugin:${versionsPluginVersion}"
+    }
+}
+
 plugins {
-	id 'org.springframework.boot' version '2.6.2'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'java'
 }
 
-group = 'com.origin'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    apply from: "${rootProject.rootDir}/config/pmd.gradle"
+    apply from: "${rootProject.rootDir}/config/checkstyle.gradle"
+    apply from: "${rootProject.rootDir}/config/jacoco.gradle"
+    apply from: "${rootProject.rootDir}/config/tests.gradle"
+
+    group = 'br.com.origin'
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+        testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+        testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+        testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
+
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    }
 }
 
-repositories {
-	mavenCentral()
+task codeChecks(type: GradleBuild) {
+    tasks = ['checkstyle', 'pmd']
+}
+
+wrapper {
+    gradleVersion = "${gradleWrapperVersion}"
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-test {
-	useJUnitPlatform()
+    implementation project(':core')
+    implementation project(':api')
 }
