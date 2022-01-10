@@ -16,8 +16,6 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(testFixtures(project(":core")))
-
-    developmentOnly "org.springframework.boot:spring-boot-devtools"
 }
 
 bootRun {

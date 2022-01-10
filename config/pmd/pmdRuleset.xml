@@ -68,12 +68,13 @@
         <exclude name="MissingSerialVersionUID"/>
         <exclude name="StaticEJBFieldShouldBeFinal"/>
         <exclude name="AvoidFieldNameMatchingMethodName"/>
+        <exclude name="AvoidLiteralsInIfCondition"/>
     </rule>
 
     <rule ref="category/java/bestpractices.xml/UnusedAssignment">
         <properties>
-            <property name="checkUnusedPrefixIncrement" value="false" />
-            <property name="reportUnusedVariables" value="false" />
+            <property name="checkUnusedPrefixIncrement" value="false"/>
+            <property name="reportUnusedVariables" value="false"/>
         </properties>
     </rule>
 
