@@ -1,9 +1,11 @@
 package com.origin.insurancehub.entities.vehicle;
 
+import lombok.Builder;
 import lombok.Data;
 import java.util.Calendar;
 
 @Data
+@Builder
 public class Vehicle {
 
     private Long year;

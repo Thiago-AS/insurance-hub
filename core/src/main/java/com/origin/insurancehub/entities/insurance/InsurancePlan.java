@@ -26,4 +26,9 @@ public enum InsurancePlan {
             return InsurancePlan.ECONOMIC;
         }).orElse(InsurancePlan.INELIGIBLE);
     }
+
+    @Override
+    public String toString() {
+        return this.label;
+    }
 }
