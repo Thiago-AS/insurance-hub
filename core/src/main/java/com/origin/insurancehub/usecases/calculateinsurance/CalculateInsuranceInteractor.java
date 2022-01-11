@@ -30,6 +30,7 @@ public class CalculateInsuranceInteractor {
 
     private Insurance calculateInsurance(final User user) {
         return Insurance.builder()
+                .user(user)
                 .auto(calculateAutoRisk(user).map(InsurancePlan::fromRiskValue).orElse(InsurancePlan.INELIGIBLE))
                 .home(calculateHomeRisk(user).map(InsurancePlan::fromRiskValue).orElse(InsurancePlan.INELIGIBLE))
                 .disability(calculateDisabilityRisk(user).map(InsurancePlan::fromRiskValue)

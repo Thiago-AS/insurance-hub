@@ -5,6 +5,7 @@ import com.origin.insurancehub.entities.house.OwnershipStatus;
 import com.origin.insurancehub.entities.insurance.Insurance;
 import com.origin.insurancehub.entities.insurance.InsurancePlan;
 import com.origin.insurancehub.entities.user.MaritalStatus;
+import com.origin.insurancehub.entities.user.User;
 import com.origin.insurancehub.entities.vehicle.Vehicle;
 import com.origin.insurancehub.usecases.calculateinsurance.CalculateInsuranceInteractor;
 import com.origin.insurancehub.usecases.calculateinsurance.CalculateInsurancePresenter;
@@ -42,6 +43,7 @@ class CalculateInsuranceInteractorTest {
                 .age(65L)
                 .build();
         final Insurance insurance = Insurance.builder()
+                .user(buildUserFromRequest(request))
                 .life(InsurancePlan.INELIGIBLE)
                 .home(InsurancePlan.INELIGIBLE)
                 .auto(InsurancePlan.INELIGIBLE)
@@ -65,6 +67,7 @@ class CalculateInsuranceInteractorTest {
                 .age(35L)
                 .build();
         final Insurance insurance = Insurance.builder()
+                .user(buildUserFromRequest(request))
                 .life(InsurancePlan.REGULAR)
                 .home(InsurancePlan.ECONOMIC)
                 .auto(InsurancePlan.REGULAR)
@@ -74,5 +77,17 @@ class CalculateInsuranceInteractorTest {
         this.interactor.execute(request);
 
         verify(this.presenter).success(insurance);
+    }
+
+    private User buildUserFromRequest(final CalculateInsuranceRequest request) {
+        return User.builder()
+                .age(request.getAge())
+                .dependents(request.getDependents())
+                .house(request.getHouse())
+                .income(request.getIncome())
+                .maritalStatus(request.getMaritalStatus())
+                .riskQuestions(request.getRiskQuestions())
+                .vehicle(request.getVehicle())
+                .build();
     }
 }

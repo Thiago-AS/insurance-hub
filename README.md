@@ -22,19 +22,19 @@ modules:
 ````
 # Install
 
-$ sdk install java 11.0.9.hs-adpt 
+$ sdk install java 11.0.9.hs-adpt
 
 Installing: java 11.0.9.hs-adpt Done installing!
 
 # Select the version
 
-$ sdk use java 11.0.9.hs-adpt 
+$ sdk use java 11.0.9.hs-adpt
 
 Using java version 11.0.9.hs-adpt in this shell.
 
 # Use it!
 
-$ java --version 
+$ java --version
 
 openjdk 11.0.9.1 2020-11-04 OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9.1+1, mixed mode)
@@ -63,7 +63,7 @@ cd <path>/insurance-hub/;
 
 ## Docker
 
-If you want to use Docker to run your service, just type (since the build is done inside docker container, it's slower 
+If you want to use Docker to run your service, just type (since the build is done inside docker container, it's slower
 than usual, so be aware of build time):
 
 ```bash
@@ -88,7 +88,7 @@ $ docker-compose up
 ./gradlew jacocoTestReport
 ```
 
-Check the report: <path>/insurance-hub/<module>/build/reports/jacoco/test/html/index.html
+Check the report: {path}/insurance-hub/{module}/build/reports/jacoco/test/html/index.html
 
 ### Coding checks
 
@@ -97,6 +97,27 @@ Check the report: <path>/insurance-hub/<module>/build/reports/jacoco/test/html/i
 ```bash
 ./gradlew codeChecks
 ```
+
+## Open API V3
+
+Using `springdoc-openapi` to automatically generate our OpenAPI v3 specification. To access it, you can run the API
+project and then access it on:
+
+```
+http://localhost:8080/v3/api-docs
+```
+
+## Swagger
+
+Using Swagger 2 to document our APIs with the generated OpenAPI v3 spec. To access it, you can run the API project and
+then access it on:
+
+```
+http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/rest-calculate-insurance-controller
+```
+
+By default, all the controllers will be mapped in this interface. It can be used to test endpoints and understand which
+parameters are required to make a request to the API.
 
 ## Built With
 
