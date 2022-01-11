@@ -7,16 +7,8 @@ checkstyle {
 
 checkstyleMain {
     source = 'src/main/java'
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
 }
 
 checkstyleTest {
     source = 'src/test/java'
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
 }

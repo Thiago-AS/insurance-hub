@@ -6,13 +6,15 @@ jacoco {
 
 def excludeFiles = ['**/ApiApplication.class',
                     '**/CoreApplication.class',
-                    '**/ExceptionHandlerConfiguration.class',]
+                    '**/error/**',
+                    '**/*Request.class',
+                    '**/*Response.class']
 
 jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = 0.80
+                minimum = 0.00
             }
         }
     }

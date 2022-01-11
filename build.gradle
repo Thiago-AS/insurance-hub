@@ -46,7 +46,7 @@ allprojects {
 }
 
 task codeChecks(type: GradleBuild) {
-    tasks = ['checkstyle', 'pmd']
+    tasks = ['checkstyleMain', 'pmdMain', 'checkstyleTest', 'pmdTest']
 }
 
 wrapper {
