@@ -22,15 +22,21 @@ modules:
 ````
 # Install
 
-$ sdk install java 11.0.9.hs-adpt Installing: java 11.0.9.hs-adpt Done installing!
+$ sdk install java 11.0.9.hs-adpt 
+
+Installing: java 11.0.9.hs-adpt Done installing!
 
 # Select the version
 
-$ sdk use java 11.0.9.hs-adpt Using java version 11.0.9.hs-adpt in this shell.
+$ sdk use java 11.0.9.hs-adpt 
+
+Using java version 11.0.9.hs-adpt in this shell.
 
 # Use it!
 
-$ java --version openjdk 11.0.9.1 2020-11-04 OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
+$ java --version 
+
+openjdk 11.0.9.1 2020-11-04 OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9.1+1)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9.1+1, mixed mode)
 ````
 
@@ -57,12 +63,16 @@ cd <path>/insurance-hub/;
 
 ## Docker
 
-If you want to use Docker to run your service, we have a Dockerfile example in the api directory:
-To run it, just type (for the api):
+If you want to use Docker to run your service, the api have a Dockerfile. 
+To run it, just type:
 
 ```bash
-sudo docker build -t insurance-hub -f api/Dockerfile .
+$ docker-compose build
+
+$ docker-compose up
 ```
+
+* If you run into any permission issue, make sure you have execute permissions on ```api/entrypoint.sh``` (```chmod +x entrypoint.sh```)
 
 ## Running the tests
 
