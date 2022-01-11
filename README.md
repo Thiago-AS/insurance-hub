@@ -63,16 +63,14 @@ cd <path>/insurance-hub/;
 
 ## Docker
 
-If you want to use Docker to run your service, the api have a Dockerfile. 
-To run it, just type:
+If you want to use Docker to run your service, just type (since the build is done inside docker container, it's slower 
+than usual, so be aware of build time):
 
 ```bash
 $ docker-compose build
 
 $ docker-compose up
 ```
-
-* If you run into any permission issue, make sure you have execute permissions on ```api/entrypoint.sh``` (```chmod +x entrypoint.sh```)
 
 ## Running the tests
 
