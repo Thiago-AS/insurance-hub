@@ -99,7 +99,8 @@ public class CalculateInsuranceInteractor {
         if (user.hasGreatIncome()) {
             risk -= 1;
         }
-        if (user.getHouse().getOwnershipStatus() == OwnershipStatus.MORTGAGED) {
+        if (Optional.ofNullable(user.getHouse())
+                .map(house -> house.getOwnershipStatus() == OwnershipStatus.MORTGAGED).orElse(false)) {
             risk += 1;
         }
         if (user.hasDependents()) {
