@@ -72,6 +72,9 @@ $ docker-compose build
 $ docker-compose up
 ```
 
+* If you're using MAC and run into gradle shutting down and running out of memory, try to increase docker memory
+  availability, for more info read [here](https://docs.docker.com/desktop/mac/#resources).
+
 ## Running the tests
 
 * To run tests:
@@ -126,6 +129,9 @@ parameters are required to make a request to the API.
 * [Spring](https://spring.io/) - Comprehensive programming and configuration model for modern Java-based applications
 * [Spring Boot](https://spring.io/projects/spring-boot) - Spring Boot makes it easy to create stand-alone,
   production-grade Spring based Applications
+* [Hamcrest](http://hamcrest.org/) - Framework for writing matcher objects allowing 'match' rules to be defined
+  declaratively. There are a number of situations where matchers are invaluable, such as UI validation, or data
+  filtering, but it is in the area of writing flexible tests that matchers are most commonly used
 * [Checkstyle](https://docs.gradle.org/5.5.1/userguide/checkstyle_plugin.html) - Performs quality checks on your
   project’s Java source files using [Checkstyle](http://checkstyle.sourceforge.net/index.html) and generates reports
   from these checks
@@ -137,6 +143,5 @@ parameters are required to make a request to the API.
   duplicated code.
 * [Swagger](https://swagger.io/) - Enabling development across the entire API lifecycle, from design and documentation,
   to test and deployment
-* [git-properties](https://github.com/n0mer/gradle-git-properties) - Plugin that
-  uses [spring-boot-actuator](https://github.com/spring-guides/gs-actuator-service) to give information about the
-  current version that running through the endpoint `/actuator/info`.
+* [Spring-boot-actuator](https://github.com/spring-guides/gs-actuator-service) to give information about the current
+  version that running through the endpoint `/actuator/info`.

@@ -21,6 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"})
 class RestCalculateInsuranceControllerIT {
 
+    private static final String INSURANCE_ENDPOINT = "/insurance/all";
+
     @MockBean
     private CalculateInsuranceProvider provider;
 
@@ -31,7 +33,7 @@ class RestCalculateInsuranceControllerIT {
     private ObjectMapper objectMapper;
 
     @Test
-    void shouldReturnSuccess() throws Exception {
+    void shouldReturnSuccessForCorrectPayload() throws Exception {
         final RestCalculateInsurancePresenter presenter = mock(RestCalculateInsurancePresenter.class);
         final CalculateInsuranceInteractor interactor = mock(CalculateInsuranceInteractor.class);
         final RestCalculateInsuranceRequest request = new RestCalculateInsuranceRequest(
@@ -49,13 +51,36 @@ class RestCalculateInsuranceControllerIT {
         when(presenter.buildPayload()).thenReturn(response);
         when(this.provider.getInteractor(presenter)).thenReturn(interactor);
 
-        mockMvc.perform(post("/insurance/all").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post(INSURANCE_ENDPOINT).contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void shouldReturnBadRequest() throws Exception {
+    void shouldReturnSuccessForHouseOrVehiclesNull() throws Exception {
+        final RestCalculateInsurancePresenter presenter = mock(RestCalculateInsurancePresenter.class);
+        final CalculateInsuranceInteractor interactor = mock(CalculateInsuranceInteractor.class);
+        final RestCalculateInsuranceRequest request = new RestCalculateInsuranceRequest(
+                35L, 1L, null, 0L, "married", List.of(0, 1, 0), null
+        );
+        final RestCalculateInsuranceResponse response = RestCalculateInsuranceResponse.builder()
+                .life(InsurancePlan.REGULAR.getLabel())
+                .home(InsurancePlan.ECONOMIC.getLabel())
+                .auto(InsurancePlan.REGULAR.getLabel())
+                .disability(InsurancePlan.INELIGIBLE.getLabel())
+                .build();
+
+        when(this.provider.getPresenter()).thenReturn(presenter);
+        when(presenter.buildPayload()).thenReturn(response);
+        when(this.provider.getInteractor(presenter)).thenReturn(interactor);
+
+        mockMvc.perform(post(INSURANCE_ENDPOINT).contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldReturnBadRequestWithNonexistentStatus() throws Exception {
         final RestCalculateInsurancePresenter presenter = mock(RestCalculateInsurancePresenter.class);
         final CalculateInsuranceInteractor interactor = mock(CalculateInsuranceInteractor.class);
         final RestCalculateInsuranceRequest request = new RestCalculateInsuranceRequest(
@@ -67,7 +92,25 @@ class RestCalculateInsuranceControllerIT {
         when(this.provider.getPresenter()).thenReturn(presenter);
         when(this.provider.getInteractor(presenter)).thenReturn(interactor);
 
-        mockMvc.perform(post("/insurance/all").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post(INSURANCE_ENDPOINT).contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldReturnBadRequestWithNonPositiveValues() throws Exception {
+        final RestCalculateInsurancePresenter presenter = mock(RestCalculateInsurancePresenter.class);
+        final CalculateInsuranceInteractor interactor = mock(CalculateInsuranceInteractor.class);
+        final RestCalculateInsuranceRequest request = new RestCalculateInsuranceRequest(
+                -1L, 11L, new RestCalculateInsuranceRequest.House("owned"), -1L, "married",
+                List.of(0, 1, 0),
+                new RestCalculateInsuranceRequest.Vehicle(-2000L)
+        );
+
+        when(this.provider.getPresenter()).thenReturn(presenter);
+        when(this.provider.getInteractor(presenter)).thenReturn(interactor);
+
+        mockMvc.perform(post(INSURANCE_ENDPOINT).contentType(MediaType.APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
