@@ -15,7 +15,7 @@ public class CalculateInsuranceRequest {
 
     private final Long dependents;
 
-    private final House house;
+    private final List<House> houses;
 
     private final Long income;
 
@@ -23,5 +23,5 @@ public class CalculateInsuranceRequest {
 
     private final List<Integer> riskQuestions;
 
-    private final Vehicle vehicle;
+    private final List<Vehicle> vehicles;
 }

@@ -37,13 +37,17 @@ class RestCalculateInsuranceControllerIT {
         final RestCalculateInsurancePresenter presenter = mock(RestCalculateInsurancePresenter.class);
         final CalculateInsuranceInteractor interactor = mock(CalculateInsuranceInteractor.class);
         final RestCalculateInsuranceRequest request = new RestCalculateInsuranceRequest(
-                35L, 1L, new RestCalculateInsuranceRequest.House("owned"), 0L, "married", List.of(0, 1, 0),
-                new RestCalculateInsuranceRequest.Vehicle(2018L)
+                35L, 1L, List.of(new RestCalculateInsuranceRequest.House(1L, "owned")), 0L, "married", List.of(0, 1, 0),
+                List.of(new RestCalculateInsuranceRequest.Vehicle(2L, 2018L))
         );
         final RestCalculateInsuranceResponse response = RestCalculateInsuranceResponse.builder()
                 .life(InsurancePlan.REGULAR.getLabel())
-                .home(InsurancePlan.ECONOMIC.getLabel())
-                .auto(InsurancePlan.REGULAR.getLabel())
+                .home(List.of(
+                        new RestCalculateInsuranceResponse.InsuranceResponseItem(1L,
+                                InsurancePlan.ECONOMIC.getLabel())))
+                .auto(List.of(
+                        new RestCalculateInsuranceResponse.InsuranceResponseItem(1L,
+                                InsurancePlan.REGULAR.getLabel())))
                 .disability(InsurancePlan.INELIGIBLE.getLabel())
                 .build();
 
@@ -61,12 +65,12 @@ class RestCalculateInsuranceControllerIT {
         final RestCalculateInsurancePresenter presenter = mock(RestCalculateInsurancePresenter.class);
         final CalculateInsuranceInteractor interactor = mock(CalculateInsuranceInteractor.class);
         final RestCalculateInsuranceRequest request = new RestCalculateInsuranceRequest(
-                35L, 1L, null, 0L, "married", List.of(0, 1, 0), null
+                35L, 1L, List.of(), 0L, "married", List.of(0, 1, 0), List.of()
         );
         final RestCalculateInsuranceResponse response = RestCalculateInsuranceResponse.builder()
                 .life(InsurancePlan.REGULAR.getLabel())
-                .home(InsurancePlan.ECONOMIC.getLabel())
-                .auto(InsurancePlan.REGULAR.getLabel())
+                .home(List.of())
+                .auto(List.of())
                 .disability(InsurancePlan.INELIGIBLE.getLabel())
                 .build();
 
@@ -84,9 +88,10 @@ class RestCalculateInsuranceControllerIT {
         final RestCalculateInsurancePresenter presenter = mock(RestCalculateInsurancePresenter.class);
         final CalculateInsuranceInteractor interactor = mock(CalculateInsuranceInteractor.class);
         final RestCalculateInsuranceRequest request = new RestCalculateInsuranceRequest(
-                35L, 1L, new RestCalculateInsuranceRequest.House("non-existent-value"), 0L, "non-existent-value",
+                35L, 1L, List.of(new RestCalculateInsuranceRequest.House(1L, "non-existent-value")), 0L,
+                "non-existent-value",
                 List.of(0, 1, 0),
-                new RestCalculateInsuranceRequest.Vehicle(2018L)
+                List.of(new RestCalculateInsuranceRequest.Vehicle(2L, 2018L))
         );
 
         when(this.provider.getPresenter()).thenReturn(presenter);
@@ -102,9 +107,9 @@ class RestCalculateInsuranceControllerIT {
         final RestCalculateInsurancePresenter presenter = mock(RestCalculateInsurancePresenter.class);
         final CalculateInsuranceInteractor interactor = mock(CalculateInsuranceInteractor.class);
         final RestCalculateInsuranceRequest request = new RestCalculateInsuranceRequest(
-                -1L, 11L, new RestCalculateInsuranceRequest.House("owned"), -1L, "married",
+                -1L, 11L, List.of(new RestCalculateInsuranceRequest.House(1L, "owned")), -1L, "married",
                 List.of(0, 1, 0),
-                new RestCalculateInsuranceRequest.Vehicle(-2000L)
+                List.of(new RestCalculateInsuranceRequest.Vehicle(2L, -2000L))
         );
 
         when(this.provider.getPresenter()).thenReturn(presenter);

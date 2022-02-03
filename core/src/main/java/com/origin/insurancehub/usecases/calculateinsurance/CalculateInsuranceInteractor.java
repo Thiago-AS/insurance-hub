@@ -1,12 +1,18 @@
 package com.origin.insurancehub.usecases.calculateinsurance;
 
+import com.origin.insurancehub.entities.house.House;
 import com.origin.insurancehub.entities.house.OwnershipStatus;
 import com.origin.insurancehub.entities.insurance.Insurance;
 import com.origin.insurancehub.entities.insurance.InsurancePlan;
+import com.origin.insurancehub.entities.insurance.ListIsuranceItem;
+import com.origin.insurancehub.entities.risk.RiskItem;
 import com.origin.insurancehub.entities.user.MaritalStatus;
 import com.origin.insurancehub.entities.user.User;
+import com.origin.insurancehub.entities.vehicle.Vehicle;
 import lombok.RequiredArgsConstructor;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class CalculateInsuranceInteractor {
@@ -17,11 +23,11 @@ public class CalculateInsuranceInteractor {
         final User user = User.builder()
                 .age(calculateInsuranceRequest.getAge())
                 .dependents(calculateInsuranceRequest.getDependents())
-                .house(calculateInsuranceRequest.getHouse())
+                .houses(calculateInsuranceRequest.getHouses())
                 .income(calculateInsuranceRequest.getIncome())
                 .maritalStatus(calculateInsuranceRequest.getMaritalStatus())
                 .riskQuestions(calculateInsuranceRequest.getRiskQuestions())
-                .vehicle(calculateInsuranceRequest.getVehicle())
+                .vehicles(calculateInsuranceRequest.getVehicles())
                 .build();
 
         final Insurance insurance = calculateInsurance(user);
@@ -31,8 +37,14 @@ public class CalculateInsuranceInteractor {
     private Insurance calculateInsurance(final User user) {
         return Insurance.builder()
                 .user(user)
-                .auto(calculateAutoRisk(user).map(InsurancePlan::fromRiskValue).orElse(InsurancePlan.INELIGIBLE))
-                .home(calculateHomeRisk(user).map(InsurancePlan::fromRiskValue).orElse(InsurancePlan.INELIGIBLE))
+                .auto(calculateAllAutoRisks(user).stream()
+                        .map(autoRisk -> ListIsuranceItem.builder().id(autoRisk.getId())
+                                .plan(InsurancePlan.fromRiskValue(autoRisk.getScore())).build()
+                        ).collect(Collectors.toList()))
+                .home(calculateAllHomeRisk(user).stream()
+                        .map(homeRisk -> ListIsuranceItem.builder().id(homeRisk.getId())
+                                .plan(InsurancePlan.fromRiskValue(homeRisk.getScore())).build()
+                        ).collect(Collectors.toList()))
                 .disability(calculateDisabilityRisk(user).map(InsurancePlan::fromRiskValue)
                         .orElse(InsurancePlan.INELIGIBLE))
                 .life(calculateLifeRisk(user).map(InsurancePlan::fromRiskValue)
@@ -40,12 +52,9 @@ public class CalculateInsuranceInteractor {
                 .build();
     }
 
-    private Optional<Integer> calculateAutoRisk(final User user) {
-        if (user.hasNoVehicle()) {
-            return Optional.empty();
-        }
-
+    private Integer calculateBaseRisk(final User user) {
         int risk = user.getRiskQuestions().stream().mapToInt(Integer::intValue).sum();
+
         if (user.isYoungerThan30()) {
             risk -= 2;
         }
@@ -55,33 +64,49 @@ public class CalculateInsuranceInteractor {
         if (user.hasGreatIncome()) {
             risk -= 1;
         }
-        if (user.getVehicle().isRecentlyProduced()) {
-            risk += 1;
-        }
 
-        return Optional.of(risk);
+        return risk;
     }
 
-    private Optional<Integer> calculateHomeRisk(final User user) {
-        if (user.hasNoHouse()) {
-            return Optional.empty();
+    private List<RiskItem> calculateAllAutoRisks(final User user) {
+        if (user.hasNoVehicle()) {
+            return List.of();
         }
 
-        int risk = user.getRiskQuestions().stream().mapToInt(Integer::intValue).sum();
-        if (user.isYoungerThan30()) {
-            risk -= 2;
-        }
-        if (user.isBetween30And40()) {
-            risk -= 1;
-        }
-        if (user.hasGreatIncome()) {
-            risk -= 1;
-        }
-        if (user.getHouse().getOwnershipStatus() == OwnershipStatus.MORTGAGED) {
+        final Integer baseRisk = this.calculateBaseRisk(user);
+        return user.getVehicles().stream()
+                .map(vehicle -> RiskItem.builder().id(vehicle.getId()).score(this.calculateAutoRisk(vehicle, baseRisk))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private Integer calculateAutoRisk(final Vehicle vehicle, final int baseRisk) {
+        int risk = baseRisk;
+        if (vehicle.isRecentlyProduced()) {
             risk += 1;
         }
 
-        return Optional.of(risk);
+        return risk;
+    }
+
+    private List<RiskItem> calculateAllHomeRisk(final User user) {
+        if (user.hasNoHouse()) {
+            return List.of();
+        }
+
+        final Integer baseRisk = this.calculateBaseRisk(user);
+        return user.getHouses().stream()
+                .map(house -> RiskItem.builder().id(house.getId()).score(this.calculateHomeRisk(house, baseRisk))
+                        .build()).collect(Collectors.toList());
+    }
+
+    private Integer calculateHomeRisk(final House house, final int baseRisk) {
+        int risk = baseRisk;
+        if (house.getOwnershipStatus() == OwnershipStatus.MORTGAGED) {
+            risk += 1;
+        }
+
+        return risk;
     }
 
     private Optional<Integer> calculateDisabilityRisk(final User user) {
@@ -99,8 +124,7 @@ public class CalculateInsuranceInteractor {
         if (user.hasGreatIncome()) {
             risk -= 1;
         }
-        if (Optional.ofNullable(user.getHouse())
-                .map(house -> house.getOwnershipStatus() == OwnershipStatus.MORTGAGED).orElse(false)) {
+        if (user.getHouses().stream().anyMatch(house -> house.getOwnershipStatus() == OwnershipStatus.MORTGAGED)) {
             risk += 1;
         }
         if (user.hasDependents()) {

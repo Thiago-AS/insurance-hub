@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,21 +40,27 @@ public class RestCalculateInsuranceController {
 
     private CalculateInsuranceRequest parseRequest(final RestCalculateInsuranceRequest request) {
         return CalculateInsuranceRequest.builder()
-                .house(Optional.ofNullable(request.getHouse()).map(house ->
-                                House.builder()
-                                        .ownershipStatus(OwnershipStatus.fromLabel(house.getOwnershipStatus()))
-                                        .build())
-                        .orElse(null)
-                )
+                .houses(parseHousesList(request.getHouses()))
                 .maritalStatus(MaritalStatus.fromLabel(request.getMaritalStatus()))
                 .age(request.getAge())
                 .dependents(request.getDependents())
                 .income(request.getIncome())
                 .riskQuestions(request.getRiskQuestions())
-                .vehicle(Optional.ofNullable(request.getVehicle()).map(vehicle ->
-                                Vehicle.builder().year(vehicle.getYear()).build()
-                        ).orElse(null)
-                )
+                .vehicles(parseVehiclesList(request.getVehicles()))
                 .build();
+    }
+
+    private List<House> parseHousesList(final List<RestCalculateInsuranceRequest.House> houses) {
+        return houses.stream()
+                .map(house -> House.builder().id(house.getId())
+                        .ownershipStatus(OwnershipStatus.fromLabel(house.getOwnershipStatus())).build()).collect(
+                        Collectors.toList());
+    }
+
+    private List<Vehicle> parseVehiclesList(final List<RestCalculateInsuranceRequest.Vehicle> vehicles) {
+        return vehicles.stream()
+                .map(vehicle -> Vehicle.builder().id(vehicle.getId())
+                        .year(vehicle.getYear()).build()).collect(
+                        Collectors.toList());
     }
 }

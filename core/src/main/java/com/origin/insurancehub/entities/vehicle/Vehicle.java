@@ -8,6 +8,8 @@ import java.util.Calendar;
 @Builder
 public class Vehicle {
 
+    private Long id;
+
     private Long year;
 
     public boolean isRecentlyProduced() {

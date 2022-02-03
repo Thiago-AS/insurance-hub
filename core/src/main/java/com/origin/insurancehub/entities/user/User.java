@@ -14,7 +14,7 @@ public class User {
 
     private Long dependents;
 
-    private House house;
+    private List<House> houses;
 
     private Long income;
 
@@ -22,14 +22,14 @@ public class User {
 
     private List<Integer> riskQuestions;
 
-    private Vehicle vehicle;
+    private List<Vehicle> vehicles;
 
     public boolean hasNoVehicle() {
-        return this.vehicle == null;
+        return this.vehicles.size() == 0;
     }
 
     public boolean hasNoHouse() {
-        return this.house == null;
+        return this.houses.size() == 0;
     }
 
     public boolean hasNoIncome() {

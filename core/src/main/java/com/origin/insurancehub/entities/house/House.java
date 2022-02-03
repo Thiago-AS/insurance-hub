@@ -7,5 +7,7 @@ import lombok.Data;
 @Builder
 public class House {
 
+    private Long id;
+
     private OwnershipStatus ownershipStatus;
 }

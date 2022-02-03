@@ -3,6 +3,7 @@ package com.origin.insurancehub.entities.insurance;
 import com.origin.insurancehub.entities.user.User;
 import lombok.Builder;
 import lombok.Data;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,7 +15,7 @@ public class Insurance {
 
     private InsurancePlan disability;
 
-    private InsurancePlan home;
+    private List<ListIsuranceItem> home;
 
-    private InsurancePlan auto;
+    private List<ListIsuranceItem> auto;
 }

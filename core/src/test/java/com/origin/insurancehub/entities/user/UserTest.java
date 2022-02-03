@@ -13,10 +13,10 @@ class UserTest {
     @Test
     void shouldCheckForNoVehicle() {
         final User user = User.builder()
-                .vehicle(null)
-                .house(House.builder()
+                .vehicles(List.of())
+                .houses(List.of(House.builder().id(1L)
                         .ownershipStatus(OwnershipStatus.OWNED)
-                        .build())
+                        .build()))
                 .income(0L)
                 .riskQuestions(List.of(0, 1, 0))
                 .dependents(0L)
@@ -30,8 +30,8 @@ class UserTest {
     @Test
     void shouldCheckForNoHouse() {
         final User user = User.builder()
-                .vehicle(Vehicle.builder().year(2018L).build())
-                .house(null)
+                .vehicles(List.of(Vehicle.builder().id(1L).year(2018L).build()))
+                .houses(List.of())
                 .income(0L)
                 .riskQuestions(List.of(0, 1, 0))
                 .dependents(0L)
@@ -45,10 +45,11 @@ class UserTest {
     @Test
     void shouldCheckForNoIncome() {
         final User user = User.builder()
-                .vehicle(Vehicle.builder().year(2018L).build())
-                .house(House.builder()
+                .vehicles(List.of(Vehicle.builder().id(1L).year(2018L).build()))
+                .houses(List.of(House.builder()
+                        .id(2L)
                         .ownershipStatus(OwnershipStatus.OWNED)
-                        .build())
+                        .build()))
                 .income(0L)
                 .riskQuestions(List.of(0, 1, 0))
                 .dependents(0L)
@@ -62,10 +63,11 @@ class UserTest {
     @Test
     void shouldCheckForDependents() {
         final User user = User.builder()
-                .vehicle(Vehicle.builder().year(2018L).build())
-                .house(House.builder()
+                .vehicles(List.of(Vehicle.builder().id(1L).year(2018L).build()))
+                .houses(List.of(House.builder()
+                        .id(2L)
                         .ownershipStatus(OwnershipStatus.OWNED)
-                        .build())
+                        .build()))
                 .income(0L)
                 .riskQuestions(List.of(0, 1, 0))
                 .dependents(2L)
@@ -79,10 +81,11 @@ class UserTest {
     @Test
     void shouldCheckForGreatIncome() {
         final User user = User.builder()
-                .vehicle(Vehicle.builder().year(2018L).build())
-                .house(House.builder()
+                .vehicles(List.of(Vehicle.builder().id(1L).year(2018L).build()))
+                .houses(List.of(House.builder()
+                        .id(2L)
                         .ownershipStatus(OwnershipStatus.OWNED)
-                        .build())
+                        .build()))
                 .income(300_000L)
                 .riskQuestions(List.of(0, 1, 0))
                 .dependents(0L)
@@ -96,10 +99,11 @@ class UserTest {
     @Test
     void shouldCheckAgeRange() {
         final User user = User.builder()
-                .vehicle(Vehicle.builder().year(2018L).build())
-                .house(House.builder()
+                .vehicles(List.of(Vehicle.builder().id(1L).year(2018L).build()))
+                .houses(List.of(House.builder()
+                        .id(2L)
                         .ownershipStatus(OwnershipStatus.OWNED)
-                        .build())
+                        .build()))
                 .income(300_000L)
                 .riskQuestions(List.of(0, 1, 0))
                 .dependents(0L)

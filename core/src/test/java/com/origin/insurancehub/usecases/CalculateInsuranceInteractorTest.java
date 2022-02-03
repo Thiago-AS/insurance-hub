@@ -4,6 +4,7 @@ import com.origin.insurancehub.entities.house.House;
 import com.origin.insurancehub.entities.house.OwnershipStatus;
 import com.origin.insurancehub.entities.insurance.Insurance;
 import com.origin.insurancehub.entities.insurance.InsurancePlan;
+import com.origin.insurancehub.entities.insurance.ListIsuranceItem;
 import com.origin.insurancehub.entities.user.MaritalStatus;
 import com.origin.insurancehub.entities.user.User;
 import com.origin.insurancehub.entities.vehicle.Vehicle;
@@ -34,8 +35,8 @@ class CalculateInsuranceInteractorTest {
     @Test
     void shouldReturnAllIneligibleInsurances() {
         final CalculateInsuranceRequest request = CalculateInsuranceRequest.builder()
-                .vehicle(null)
-                .house(null)
+                .vehicles(List.of())
+                .houses(List.of())
                 .income(0L)
                 .riskQuestions(List.of(0, 1, 0))
                 .dependents(0L)
@@ -45,8 +46,8 @@ class CalculateInsuranceInteractorTest {
         final Insurance insurance = Insurance.builder()
                 .user(buildUserFromRequest(request))
                 .life(InsurancePlan.INELIGIBLE)
-                .home(InsurancePlan.INELIGIBLE)
-                .auto(InsurancePlan.INELIGIBLE)
+                .home(List.of())
+                .auto(List.of())
                 .disability(InsurancePlan.INELIGIBLE)
                 .build();
 
@@ -58,8 +59,8 @@ class CalculateInsuranceInteractorTest {
     @Test
     void shouldReturnCalculatedInsurances() {
         final CalculateInsuranceRequest request = CalculateInsuranceRequest.builder()
-                .vehicle(Vehicle.builder().year(2018L).build())
-                .house(House.builder().ownershipStatus(OwnershipStatus.OWNED).build())
+                .vehicles(List.of(Vehicle.builder().id(1L).year(2018L).build()))
+                .houses(List.of(House.builder().id(2L).ownershipStatus(OwnershipStatus.OWNED).build()))
                 .income(0L)
                 .riskQuestions(List.of(0, 1, 0))
                 .dependents(2L)
@@ -69,8 +70,8 @@ class CalculateInsuranceInteractorTest {
         final Insurance insurance = Insurance.builder()
                 .user(buildUserFromRequest(request))
                 .life(InsurancePlan.REGULAR)
-                .home(InsurancePlan.ECONOMIC)
-                .auto(InsurancePlan.REGULAR)
+                .home(List.of(ListIsuranceItem.builder().id(2L).plan(InsurancePlan.ECONOMIC).build()))
+                .auto(List.of(ListIsuranceItem.builder().id(1L).plan(InsurancePlan.REGULAR).build()))
                 .disability(InsurancePlan.INELIGIBLE)
                 .build();
 
@@ -83,11 +84,11 @@ class CalculateInsuranceInteractorTest {
         return User.builder()
                 .age(request.getAge())
                 .dependents(request.getDependents())
-                .house(request.getHouse())
+                .houses(request.getHouses())
                 .income(request.getIncome())
                 .maritalStatus(request.getMaritalStatus())
                 .riskQuestions(request.getRiskQuestions())
-                .vehicle(request.getVehicle())
+                .vehicles(request.getVehicles())
                 .build();
     }
 }

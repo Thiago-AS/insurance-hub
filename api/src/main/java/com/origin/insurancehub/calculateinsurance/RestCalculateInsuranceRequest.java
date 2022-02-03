@@ -24,9 +24,9 @@ public class RestCalculateInsuranceRequest {
     @NotNull
     private Long dependents;
 
-    @JsonProperty("house")
+    @JsonProperty("houses")
     @Valid
-    private House house;
+    private List<House> houses;
 
     @JsonProperty("income")
     @PositiveOrZero
@@ -42,14 +42,19 @@ public class RestCalculateInsuranceRequest {
     @NotNull
     private List<Integer> riskQuestions;
 
-    @JsonProperty("vehicle")
+    @JsonProperty("vehicles")
     @Valid
-    private Vehicle vehicle;
+    private List<Vehicle> vehicles;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     public static class House {
+
+        @JsonProperty("id")
+        @PositiveOrZero
+        @NotNull
+        private Long id;
 
         @JsonProperty("ownership_status")
         @Pattern(regexp = "^(owned|mortgaged)$")
@@ -61,6 +66,11 @@ public class RestCalculateInsuranceRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Vehicle {
+
+        @JsonProperty("id")
+        @PositiveOrZero
+        @NotNull
+        private Long id;
 
         @JsonProperty("year")
         @PositiveOrZero
