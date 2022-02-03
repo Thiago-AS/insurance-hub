@@ -35,19 +35,24 @@ public class CalculateInsuranceInteractor {
     }
 
     private Insurance calculateInsurance(final User user) {
+        if (user.isNotEligibleForInsurancePlans()) {
+            return Insurance.getIneligibleInsurances(user);
+        }
+
+        final int baseRisk = calculateBaseRisk(user);
         final Insurance insurance = Insurance.builder()
                 .user(user)
-                .auto(calculateAllAutoRisks(user).stream()
+                .auto(calculateAllAutoRisks(user, baseRisk).stream()
                         .map(autoRisk -> ListIsuranceItem.builder().id(autoRisk.getId())
                                 .plan(InsurancePlan.fromRiskValue(autoRisk.getScore())).build()
                         ).collect(Collectors.toList()))
-                .home(calculateAllHomeRisk(user).stream()
+                .home(calculateAllHomeRisk(user, baseRisk).stream()
                         .map(homeRisk -> ListIsuranceItem.builder().id(homeRisk.getId())
                                 .plan(InsurancePlan.fromRiskValue(homeRisk.getScore())).build()
                         ).collect(Collectors.toList()))
-                .disability(calculateDisabilityRisk(user).map(InsurancePlan::fromRiskValue)
+                .disability(calculateDisabilityRisk(user, baseRisk).map(InsurancePlan::fromRiskValue)
                         .orElse(InsurancePlan.INELIGIBLE))
-                .life(calculateLifeRisk(user).map(InsurancePlan::fromRiskValue)
+                .life(calculateLifeRisk(user, baseRisk).map(InsurancePlan::fromRiskValue)
                         .orElse(InsurancePlan.INELIGIBLE))
                 .build();
         insurance.setUmbrella(calculateUmbrellaRisk(user, insurance).map(InsurancePlan::fromRiskValue)
@@ -79,12 +84,11 @@ public class CalculateInsuranceInteractor {
         return Optional.empty();
     }
 
-    private List<RiskItem> calculateAllAutoRisks(final User user) {
+    private List<RiskItem> calculateAllAutoRisks(final User user, final int baseRisk) {
         if (user.hasNoVehicle()) {
             return List.of();
         }
 
-        final Integer baseRisk = this.calculateBaseRisk(user);
         return user.getVehicles().stream()
                 .map(vehicle -> RiskItem.builder().id(vehicle.getId()).score(this.calculateAutoRisk(vehicle, baseRisk))
                         .build())
@@ -100,12 +104,11 @@ public class CalculateInsuranceInteractor {
         return risk;
     }
 
-    private List<RiskItem> calculateAllHomeRisk(final User user) {
+    private List<RiskItem> calculateAllHomeRisk(final User user, final int baseRisk) {
         if (user.hasNoHouse()) {
             return List.of();
         }
 
-        final Integer baseRisk = this.calculateBaseRisk(user);
         return user.getHouses().stream()
                 .map(house -> RiskItem.builder().id(house.getId()).score(this.calculateHomeRisk(house, baseRisk))
                         .build()).collect(Collectors.toList());
@@ -120,21 +123,12 @@ public class CalculateInsuranceInteractor {
         return risk;
     }
 
-    private Optional<Integer> calculateDisabilityRisk(final User user) {
+    private Optional<Integer> calculateDisabilityRisk(final User user, final int baseRisk) {
         if (user.hasNoIncome() || user.isOlderThan60()) {
             return Optional.empty();
         }
 
-        int risk = user.getRiskQuestions().stream().mapToInt(Integer::intValue).sum();
-        if (user.isYoungerThan30()) {
-            risk -= 2;
-        }
-        if (user.isBetween30And40()) {
-            risk -= 1;
-        }
-        if (user.hasGreatIncome()) {
-            risk -= 1;
-        }
+        int risk = baseRisk;
         if (user.getHouses().stream().anyMatch(house -> house.getOwnershipStatus() == OwnershipStatus.MORTGAGED)) {
             risk += 1;
         }
@@ -144,25 +138,19 @@ public class CalculateInsuranceInteractor {
         if (user.getMaritalStatus() == MaritalStatus.MARRIED) {
             risk -= 1;
         }
+        if (user.getRiskQuestions().get(1) == 1) {
+            risk += 2;
+        }
 
         return Optional.of(risk);
     }
 
-    private Optional<Integer> calculateLifeRisk(final User user) {
+    private Optional<Integer> calculateLifeRisk(final User user, final int baseRisk) {
         if (user.isOlderThan60()) {
             return Optional.empty();
         }
 
-        int risk = user.getRiskQuestions().stream().mapToInt(Integer::intValue).sum();
-        if (user.isYoungerThan30()) {
-            risk -= 2;
-        }
-        if (user.isBetween30And40()) {
-            risk -= 1;
-        }
-        if (user.hasGreatIncome()) {
-            risk -= 1;
-        }
+        int risk = baseRisk;
         if (user.hasDependents()) {
             risk += 1;
         }

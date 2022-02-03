@@ -55,4 +55,8 @@ public class User {
     public boolean isOlderThan60() {
         return this.age > 60;
     }
+
+    public boolean isNotEligibleForInsurancePlans() {
+        return this.riskQuestions.stream().mapToInt(Integer::intValue).sum() == 0 && this.income < 25_000;
+    }
 }

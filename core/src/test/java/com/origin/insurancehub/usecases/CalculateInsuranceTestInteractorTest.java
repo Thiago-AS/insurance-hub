@@ -82,6 +82,56 @@ class CalculateInsuranceTestInteractorTest {
         verify(this.presenter).success(insurance);
     }
 
+    @Test
+    void shouldCountSecondRiskQuestionInDisabilityInsurance() {
+        final CalculateInsuranceRequest request = CalculateInsuranceRequest.builder()
+                .vehicles(List.of(Vehicle.builder().id(1L).year(2018L).build()))
+                .houses(List.of(House.builder().id(2L).ownershipStatus(OwnershipStatus.OWNED).build()))
+                .income(100_000L)
+                .riskQuestions(List.of(0, 1, 0))
+                .dependents(2L)
+                .maritalStatus(MaritalStatus.SINGLE)
+                .age(35L)
+                .build();
+        final Insurance insurance = Insurance.builder()
+                .user(buildUserFromRequest(request))
+                .life(InsurancePlan.REGULAR)
+                .home(List.of(ListIsuranceItem.builder().id(2L).plan(InsurancePlan.ECONOMIC).build()))
+                .auto(List.of(ListIsuranceItem.builder().id(1L).plan(InsurancePlan.REGULAR).build()))
+                .disability(InsurancePlan.RESPONSIBLE)
+                .umbrella(InsurancePlan.ECONOMIC)
+                .build();
+
+        this.interactor.execute(request);
+
+        verify(this.presenter).success(insurance);
+    }
+
+    @Test
+    void shouldReturnAllInsurancesIneligible() {
+        final CalculateInsuranceRequest request = CalculateInsuranceRequest.builder()
+                .vehicles(List.of(Vehicle.builder().id(1L).year(2018L).build()))
+                .houses(List.of(House.builder().id(2L).ownershipStatus(OwnershipStatus.OWNED).build()))
+                .income(20_000L)
+                .riskQuestions(List.of(0, 0, 0))
+                .dependents(2L)
+                .maritalStatus(MaritalStatus.SINGLE)
+                .age(35L)
+                .build();
+        final Insurance insurance = Insurance.builder()
+                .user(buildUserFromRequest(request))
+                .life(InsurancePlan.INELIGIBLE)
+                .home(List.of(ListIsuranceItem.builder().id(2L).plan(InsurancePlan.INELIGIBLE).build()))
+                .auto(List.of(ListIsuranceItem.builder().id(1L).plan(InsurancePlan.INELIGIBLE).build()))
+                .disability(InsurancePlan.INELIGIBLE)
+                .umbrella(InsurancePlan.INELIGIBLE)
+                .build();
+
+        this.interactor.execute(request);
+
+        verify(this.presenter).success(insurance);
+    }
+
     private User buildUserFromRequest(final CalculateInsuranceRequest request) {
         return User.builder()
                 .age(request.getAge())
