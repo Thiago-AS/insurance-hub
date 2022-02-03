@@ -35,7 +35,7 @@ public class CalculateInsuranceInteractor {
     }
 
     private Insurance calculateInsurance(final User user) {
-        return Insurance.builder()
+        final Insurance insurance = Insurance.builder()
                 .user(user)
                 .auto(calculateAllAutoRisks(user).stream()
                         .map(autoRisk -> ListIsuranceItem.builder().id(autoRisk.getId())
@@ -50,6 +50,9 @@ public class CalculateInsuranceInteractor {
                 .life(calculateLifeRisk(user).map(InsurancePlan::fromRiskValue)
                         .orElse(InsurancePlan.INELIGIBLE))
                 .build();
+        insurance.setUmbrella(calculateUmbrellaRisk(user, insurance).map(InsurancePlan::fromRiskValue)
+                .orElse(InsurancePlan.INELIGIBLE));
+        return insurance;
     }
 
     private Integer calculateBaseRisk(final User user) {
@@ -66,6 +69,14 @@ public class CalculateInsuranceInteractor {
         }
 
         return risk;
+    }
+
+    private Optional<Integer> calculateUmbrellaRisk(final User user, final Insurance insurance) {
+        if (insurance.hasAnyEconomicInsurancePlan()) {
+            return Optional.of(calculateBaseRisk(user));
+        }
+
+        return Optional.empty();
     }
 
     private List<RiskItem> calculateAllAutoRisks(final User user) {

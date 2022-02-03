@@ -15,7 +15,16 @@ public class Insurance {
 
     private InsurancePlan disability;
 
+    private InsurancePlan umbrella;
+
     private List<ListIsuranceItem> home;
 
     private List<ListIsuranceItem> auto;
+
+    public boolean hasAnyEconomicInsurancePlan() {
+        return life.equals(InsurancePlan.ECONOMIC)
+                || disability.equals(InsurancePlan.ECONOMIC)
+                || home.stream().anyMatch(homeItem -> homeItem.getPlan().equals(InsurancePlan.ECONOMIC)
+                || auto.stream().anyMatch(autoItem -> autoItem.getPlan().equals(InsurancePlan.ECONOMIC)));
+    }
 }

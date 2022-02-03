@@ -17,6 +17,9 @@ public class RestCalculateInsuranceResponse {
     @JsonProperty("disability")
     private final String disability;
 
+    @JsonProperty("umbrella")
+    private final String umbrella;
+
     @JsonProperty("home")
     private final List<InsuranceResponseItem> home;
 

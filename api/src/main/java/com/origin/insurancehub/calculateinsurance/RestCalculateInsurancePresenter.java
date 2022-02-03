@@ -30,6 +30,7 @@ public class RestCalculateInsurancePresenter implements CalculateInsurancePresen
                         .map(homePlan -> new RestCalculateInsuranceResponse.InsuranceResponseItem(homePlan.getId(),
                                 homePlan.getPlan().getLabel())).collect(Collectors.toList()))
                 .life(this.insurance.getLife().getLabel())
+                .umbrella(this.insurance.getUmbrella().getLabel())
                 .build();
     }
 }

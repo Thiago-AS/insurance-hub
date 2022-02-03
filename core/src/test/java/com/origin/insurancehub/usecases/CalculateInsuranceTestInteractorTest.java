@@ -20,7 +20,7 @@ import java.util.List;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class CalculateInsuranceInteractorTest {
+class CalculateInsuranceTestInteractorTest {
 
     @Mock
     private CalculateInsurancePresenter presenter;
@@ -49,6 +49,7 @@ class CalculateInsuranceInteractorTest {
                 .home(List.of())
                 .auto(List.of())
                 .disability(InsurancePlan.INELIGIBLE)
+                .umbrella(InsurancePlan.INELIGIBLE)
                 .build();
 
         this.interactor.execute(request);
@@ -73,6 +74,7 @@ class CalculateInsuranceInteractorTest {
                 .home(List.of(ListIsuranceItem.builder().id(2L).plan(InsurancePlan.ECONOMIC).build()))
                 .auto(List.of(ListIsuranceItem.builder().id(1L).plan(InsurancePlan.REGULAR).build()))
                 .disability(InsurancePlan.INELIGIBLE)
+                .umbrella(InsurancePlan.ECONOMIC)
                 .build();
 
         this.interactor.execute(request);
